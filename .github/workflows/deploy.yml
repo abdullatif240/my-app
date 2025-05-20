@@ -1,37 +1,34 @@
-name: Build React App
-
+name: Deploy React App to GitHub Pages
+ 
 on:
   push:
-    branches: [ main ]  # or your default branch
-  pull_request:
-    branches: [ main ]
-
+    branches:
+      - main
+ 
+permissions:
+  contents: write
+ 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-
+ 
     steps:
-      # Step 1: Checkout the repository
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
-
-      # Step 2: Set up Node.js
-      - name: Set up Node.js
+ 
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18  # or whatever version you need
-
-      # Step 3: Install dependencies
+          node-version: 18
+ 
       - name: Install dependencies
         run: npm install
-
-      # Step 4: Build the React app
-      - name: Build
+ 
+      - name: Build React app
         run: npm run build
-
-      # Optional: Upload build artifacts
-      - name: Upload production build
-        uses: actions/upload-artifact@v3
+ 
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: react-build
-          path: build
+          github_token: ${{ secrets.DEPLOY }}
+          publish_dir: ./build
